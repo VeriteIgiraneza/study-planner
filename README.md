@@ -25,9 +25,11 @@ Students know their deadlines but not when they'll actually do the work. Assignm
 - **Mobile (planned):** React Native, Expo, TypeScript
 
 ## Project structure
+```text
 study-planner/
 ├── backend/ Spring Boot API
 └── mobile/ React Native app (coming soon)
+```
 
 ## Running locally
 
@@ -68,5 +70,11 @@ mvnw.cmd spring-boot:run
 ```
 
 > Environment variables set this way only last for the current terminal window.
+
+#### Keeping variables between sessions (optional)
+
+- **macOS / Linux:** add the `export` lines to your shell profile (`~/.zshrc` on macOS, `~/.bashrc` on most Linux systems), then open a new terminal.
+- **Windows:** run `setx DB_USERNAME "planner_user"` and `setx DB_PASSWORD "your_password"`, then open a new terminal (`setx` doesn't affect the current window). You can also add them under *System Properties -> Environment Variables*.
+- **IDE:** set them in your IDE's run configuration (for example, IntelliJ IDEA or VS Code launch settings).
 
 Liquibase creates the tables automatically on startup!
