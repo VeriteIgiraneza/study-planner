@@ -1,0 +1,54 @@
+# Runs the backend tests on every push to main and every pull request into main.
+name: Backend CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    # Run every command from the backend folder (where mvnw and pom.xml live).
+    defaults:
+      run:
+        working-directory: backend
+
+    # A temporary PostgreSQL database that exists only during this run.
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: planner_user
+          POSTGRES_PASSWORD: ci_password
+          POSTGRES_DB: study_planner
+        ports:
+          - 5432:5432
+        # Wait until the database is ready before running tests.
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    # The same environment variables application.yml expects locally.
+    env:
+      DB_USERNAME: planner_user
+      DB_PASSWORD: ci_password
+
+    steps:
+      # Download the repository code onto the runner.
+      - uses: actions/checkout@v7
+
+      # Install Java 21 and cache Maven dependencies between runs.
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      # -B (batch mode) gives cleaner logs in CI.
+      - name: Run tests
+        run: ./mvnw -B test
