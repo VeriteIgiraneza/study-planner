@@ -1,12 +1,21 @@
 # Study Planner
+[![Backend CI](https://github.com/VeriteIgiraneza/study-planner/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/VeriteIgiraneza/study-planner/actions/workflows/backend-ci.yml)
 
 A planner for university students that automatically schedules assignment work into their available time and learns from how long tasks actually take.
 
-> Status: In development. Backend foundation is in place; features are being built incrementally.
+> Status: In development. Student sign-up is complete with validation, BCrypt password hashing, and automated tests. Login and scheduling features are next.
 
 ## The problem
 
 Students know their deadlines but not when they'll actually do the work. Assignments pile up, time estimates are off, and work gets scheduled late at night or not at all.
+
+## Implemented
+
+- Student sign-up API with input validation and duplicate-email protection
+- Passwords hashed with BCrypt; hashes never returned by the API
+- Standardized error responses (RFC 9457 Problem Details)
+- Database schema managed with Liquibase migrations
+- Unit tests (JUnit, Mockito) and CI with GitHub Actions
 
 ## Planned features
 
@@ -22,13 +31,14 @@ Students know their deadlines but not when they'll actually do the work. Assignm
 
 - **Backend:** Java 21, Spring Boot, Maven
 - **Database:** PostgreSQL, Liquibase
+- **Testing & CI:** JUnit, Mockito, GitHub Actions
 - **Mobile (planned):** React Native, Expo, TypeScript
 
 ## Project structure
 ```text
 study-planner/
-├── backend/ Spring Boot API
-└── mobile/ React Native app (coming soon)
+├── backend/   Spring Boot API
+└── mobile/    React Native app (coming soon)
 ```
 
 ## Running locally
@@ -78,3 +88,30 @@ mvnw.cmd spring-boot:run
 - **IDE:** set them in your IDE's run configuration (for example, IntelliJ IDEA or VS Code launch settings).
 
 Liquibase creates the tables automatically on startup!
+
+
+## API
+
+### `POST /api/auth/signup`
+
+Request:
+```json
+{
+  "firstName": "Jane",
+  "lastName": "Doe",
+  "email": "jane@example.com",
+  "password": "password123"
+}
+```
+
+Responses:
+- `201 Created` with the new user (no password data)
+- `400 Bad Request` with per-field validation errors
+- `409 Conflict` if the email is already registered
+
+## Running tests
+
+```bash
+cd backend
+./mvnw test
+```
