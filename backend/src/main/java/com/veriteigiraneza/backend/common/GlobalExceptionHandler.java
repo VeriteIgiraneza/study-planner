@@ -11,7 +11,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.veriteigiraneza.backend.auth.InvalidCredentialsException;
 import com.veriteigiraneza.backend.user.EmailInUseException;
+import com.veriteigiraneza.backend.user.UserNotFoundException;
 
 // @RestControllerAdvice: applies to every controller in the app.
 // When a controller (or the service it calls) throws an exception,
@@ -23,6 +25,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EmailInUseException.class)
     public ProblemDetail handleEmailInUse(EmailInUseException ex) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
+    // Wrong email or password 401 with one generic message.
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ProblemDetail handleInvalidCredentials(InvalidCredentialsException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, ex.getMessage());
+    }
+
+    // Valid token, but the user no longer exists 404.
+    @ExceptionHandler(UserNotFoundException.class)
+    public ProblemDetail handleUserNotFound(UserNotFoundException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
     // Rare race case: two sign-ups with the same email at the same moment.
