@@ -51,4 +51,7 @@ jobs:
 
       # -B (batch mode) gives cleaner logs in CI.
       - name: Run tests
-        run: ./mvnw -B test
+        run: |
+          # Random signing key for this run only, so no secret is committed.
+          export JWT_SECRET=$(openssl rand -base64 32)
+          ./mvnw -B test

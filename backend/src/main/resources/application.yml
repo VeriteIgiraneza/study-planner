@@ -9,3 +9,12 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: validate
+
+# Custom settings for this app (not Spring's own).
+app:
+  jwt:
+    # HMAC signing key, at least 32 characters. Comes from an environment
+    # variable so it is never committed to GitHub.
+    secret: ${JWT_SECRET}
+    # How long a token stays valid after login.
+    expiration-minutes: 60

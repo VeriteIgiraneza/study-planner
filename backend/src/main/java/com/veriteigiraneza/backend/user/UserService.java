@@ -23,6 +23,14 @@ public class UserService {
 
     // @Transactional: everything in this method runs as one database transaction.
     // If anything fails partway through, nothing is saved.
+    // Looks up the logged-in user. readOnly: no changes to the database.
+    @Transactional(readOnly = true)
+    public UserResponse getUser(Long id) {
+        return userRepository.findById(id)
+                .map(UserResponse::from)
+                .orElseThrow(() -> new UserNotFoundException(id));
+    }
+
     @Transactional
     public UserResponse signUp(SignUpRequest request) {
 
